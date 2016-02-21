@@ -10,6 +10,9 @@
 // ==/UserScript==
 
 function Employee( name, position, start, end ){
+	if ( end == undefined || end == null )
+		end = "";
+	
 	this.name = name;
 	this.position = position;
 	this.start = start;
@@ -85,6 +88,7 @@ function parseEmployeeList(){
 }
 
 function editCurrentRow(){
+	var employee = Employee.pop();
 	var n = getHighest();
 	var row = getHighestRow();
 	var nameSelect = document.getElementById( "emp" + n );
@@ -95,11 +99,16 @@ function editCurrentRow(){
 	setName( nameSelect, "Hennessy, Michael" );
 	updatePositions( n );
 	setPosition( positionSelect, "Shift Supervisor" );
-	setTimeValue( startBox, "6:00AM" );
-	setTimeValue( endBox, "3:00PM" );
+	setTimeValue( startBox, employee.start );
+	setTimeValue( endBox, employee.end );
 	
 	checkModification( n );
 	processLastRowFocus( n );
+}
+
+function addEmployees(){
+	while ( Employees.length > 0 )
+		editCurrentRow();
 }
 
 var textarea = document.createElement( "textarea" );
