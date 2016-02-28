@@ -153,6 +153,10 @@ function parseEmployeeList(){
 	
 	for ( var i = 0; i < tokens.length / 5; i++ ){
 		var off = i * 5;
+		if ( tokens[off] == "" ){
+			console.log( "Bad token, continuing..." );
+			continue;
+		}
 		var n = tokens[off].split( "," );
 		
 		var name = new EmployeeName( n[1].trim().toUpperCase(), n[0].trim().toUpperCase() );		
@@ -208,7 +212,7 @@ function editCurrentRow(){
 	}
 	else{
 		if ( !startValid && !endValid ){
-			console.error( "Couldn't parse " + employee.name.name() );
+			console.log( "Couldn't parse " + employee.name.name() + "; start and end times were left blank." );
 		}
 		else{
 			if ( setName( nameSelect, employee.name.oname() ) ){
