@@ -78,7 +78,7 @@ function loadEntered(){
 		var fname = names[1].trim().toUpperCase();
 		var lname = names[0].trim().toUpperCase();
 		var value = cur.value;
-		Entered.push( new EmployeeName( fname, lname, value ) );
+		Entered.push( { "name":new EmployeeName( fname, lname, value ), "num": i } );
 	}
 }
 
@@ -96,7 +96,7 @@ function getNameValueFromString( string ){
 		return null;
 	
 	for ( var i = 0; i < Names.length; i++){
-		if ( Names[i].string == string )
+		if ( Names[i].oname() == string )
 			return Names[i].value;
 	}
 	
@@ -109,9 +109,10 @@ function setName( nameBox, name ){
 	for ( var i = 0; i < names.length; i++ ){
 		if ( names[i].innerHTML.toUpperCase().indexOf( name ) != -1 ){
 			nameBox.value = names[i].value;
-			break;
+			return true;
 		}
 	}
+	return false;
 }
 
 function setPosition( positionBox, position ){
@@ -120,9 +121,10 @@ function setPosition( positionBox, position ){
 	for ( var i = 0; i < positions.length; i++ ){
 		if ( positions[i].innerHTML.toUpperCase().indexOf( position ) != -1 ){
 			positionBox.value = positions[i].value;
-			return;
+			return true;
 		}
 	}
+	return false;
 }
 
 function setTimeValue( timeBox, time ){
@@ -153,7 +155,8 @@ function parseEmployeeList(){
 		var off = i * 5;
 		var n = tokens[off].split( "," );
 		
-		var name = new EmployeeName( n[1].trim().toUpperCase(), n[0].trim().toUpperCase(), getNameValueFromString( tokens[off] ) );		
+		var name = new EmployeeName( n[1].trim().toUpperCase(), n[0].trim().toUpperCase() );		
+		name.value = getNameValueFromString( name.oname() );
 		var late = tokens[off+1];
 		var startTime = tokens[off+2];
 		var endTime = tokens[off+3];
@@ -165,30 +168,78 @@ function parseEmployeeList(){
 	addEmployees();
 }
 
+function employeeAlreadyEntered( employee ){
+	for ( var i = 0; i < Entered.length; i++ ){
+		var cur = Entered[i];
+		if ( cur.name.value == employee.name.value ){
+			return cur.num;
+		}
+	}
+	return -1;
+}
+
 function editCurrentRow(){
 	var employee = Employees.pop();
-	var n = getHighest();
-	var row = getHighestRow();
+	console.log( employee );
+	
+	var n;
+	
+	var alreadyEntered = employeeAlreadyEntered( employee );
+	
+	if ( alreadyEntered != -1 ){
+		n = alreadyEntered;
+	}
+	else{
+		n = getHighest();
+	}
 	var nameSelect = document.getElementById( "emp" + n );
 	var positionSelect = document.getElementById( "pos" + n );
 	var startBox = document.getElementById( "start" + n );
 	var endBox = document.getElementById( "end" + n );
 	
-	setName( nameSelect, employee.name.name() );
-	updatePositions( n );    
-    
-	setPosition( positionSelect, employee.position );
-    
-	setTimeValue( startBox, employee.start );
-	setTimeValue( endBox, employee.end );
+	var startValid = employee.start.indexOf( "M" ) != -1;
+	var endValid = employee.end.indexOf( "M" ) != -1;
 	
-	checkModification( n );
-	processLastRowFocus( n );
+	if ( alreadyEntered != -1 ){
+		if ( startValid ) 
+			setTimeValue( startBox, employee.start );
+		if ( endValid )
+			setTimeValue( endBox, employee.end );
+		checkModification( n );
+	}
+	else{
+		if ( !startValid && !endValid ){
+			console.error( "Couldn't parse " + employee.name.name() );
+		}
+		else{
+			if ( setName( nameSelect, employee.name.oname() ) ){
+				updatePositions( n );    
+				
+				if ( employee.position.indexOf( "SUPER" ) == -1 && employee.position.indexOf( "DISP" ) == -1 ){
+					setPosition( positionSelect, "WEEKEND" );
+				}
+				else
+					setPosition( positionSelect, employee.position );
+				
+				if ( startValid ) 
+					setTimeValue( startBox, employee.start );
+				if ( endValid )
+					setTimeValue( endBox, employee.end );
+				
+				checkModification( n );
+				processLastRowFocus( n );
+			}
+			else{
+				console.log( "Error setting name: " +  employee.name.oname() );
+			}
+		}
+	}
 }
 
 function addEmployees(){
 	while ( Employees.length > 0 )
 		editCurrentRow();
+	loadEntered();
 }
 
 if ( document.getElementById( "employeeDump" ) == null ){
