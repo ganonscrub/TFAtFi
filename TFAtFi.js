@@ -35,7 +35,7 @@ function Employee( name, start, end, position ){
 	this.name = name;
 	this.start = start;
 	this.end = end;
-    this.position = position.toUpperCase();
+	this.position = position.toUpperCase();
 }
 
 var Names;
@@ -132,16 +132,16 @@ function setTimeValue( timeBox, time ){
 }
 
 function getPosition( position ){
-    if ( position.toUpperCase().indexOf( "SUPERVISOR" ) != -1 )
-        return "Shift Supervisor";
-    else if ( position.toUpperCase().indexOf( "DISPATCHER" ) != - 1 )
-        return "Dispatcher";
-    else
-        return "Driver: Night &amp; Weekend Service";
+	if ( position.toUpperCase().indexOf( "SUPERVISOR" ) != -1 )
+		return "Shift Supervisor";
+	else if ( position.toUpperCase().indexOf( "DISPATCHER" ) != - 1 )
+		return "Dispatcher";
+	else
+		return "Driver: Night &amp; Weekend Service";
 }
 
-function parseEmployeeList(){   
-    Employees = [];
+function parseEmployeeList(){
+	Employees = [];
     
 	var text = document.getElementById( "employeeDump" ).value;
 	text = text.trim().replace( /\n\n/g, "|" ).replace( /\n/g, "|" ).replace( /am/g, "AM" ).replace( /pm/g, "PM" );
@@ -150,7 +150,7 @@ function parseEmployeeList(){
     // expect 5 tokens: name, late, start, end, route
 	
 	for ( var i = 0; i < tokens.length / 5; i++ ){
-        var off = i * 5;
+		var off = i * 5;
 		var n = tokens[off].split( "," );
 		
 		var name = new EmployeeName( n[1].trim().toUpperCase(), n[0].trim().toUpperCase(), getNameValueFromString( tokens[off] ) );		
@@ -159,10 +159,10 @@ function parseEmployeeList(){
 		var endTime = tokens[off+3];
 		var position = tokens[off+4];
 		
-        Employees.push( new Employee( name, startTime, endTime, position ) );
+		Employees.push( new Employee( name, startTime, endTime, position ) );
 	}
     
-    addEmployees();
+	addEmployees();
 }
 
 function editCurrentRow(){
