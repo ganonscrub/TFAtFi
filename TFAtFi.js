@@ -180,7 +180,6 @@ function employeeAlreadyEntered( employee ){
 
 function editCurrentRow(){
 	var employee = Employees.pop();
-	console.log( employee );
 	
 	var n;
 	
