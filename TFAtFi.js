@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TimeForge Attendance Filler
 // @namespace    ganonscrub_script
-// @version      0.2
+// @version      0.3
 // @description  Makes TimeForge slightly less terrible
 // @author       ganonscrub
 // @include      *timeforge.com/Scheduler/sa/bulkEnterAttendance.html*
