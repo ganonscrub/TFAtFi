@@ -154,7 +154,7 @@ function employeeAlreadyEntered( employee ){
 		var start = document.getElementById( "start" + cur.num ).value;
 		var end = document.getElementById( "end" + cur.num ).value;
 		if ( cur.name.value == employee.name.value ){
-			if ( start.indexOf( 'M' ) != -1 && start == employee.start )
+			if ( start.indexOf( 'M' ) != -1 && ( start == employee.start || employee.start == '-' ) )
 				highest = cur.num;
 		}
 	}
